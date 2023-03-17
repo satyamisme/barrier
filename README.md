@@ -146,3 +146,15 @@ __Q: Is it possible to use Barrier on Mac OS X / OS X versions prior to 10.12?__
 >      - *(see [#109](https://github.com/debauchee/barrier/issues/109) and [#1251](https://github.com/debauchee/barrier/issues/1251) for status or to volunteer your talents)*
 >
 > The complete list of open issues can be found in the ['Issues' tab on GitHub](https://github.com/debauchee/barrier/issues?q=is%3Aissue+is%3Aopen). Help is always appreciated.
+
+
+### Build on mac m1 key point
+```
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+sudo xcodebuild -license
+
+export LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
+
+export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl@3/lib/pkgconfig"
+```
