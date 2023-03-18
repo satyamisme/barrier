@@ -321,6 +321,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
         ${OPENSSL_ROOT}/lib/ssleay32.lib
     )
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.12" CACHE STRING "Minimum OS X deployment version")
     find_program(APT_PROGRAM "apt")
     find_program(BREW_PROGRAM "brew")
     find_program(PORT_PROGRAM "port")
@@ -419,6 +420,9 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set (BARRIER_BUNDLE_DIR ${CMAKE_BINARY_DIR}/bundle)
     set (BARRIER_BUNDLE_APP_DIR ${BARRIER_BUNDLE_DIR}/Barrier.app)
     set (BARRIER_BUNDLE_BINARY_DIR ${BARRIER_BUNDLE_APP_DIR}/Contents/MacOS)
+    set (CMAKE_OSX_ARCHITECTURES "arm64")
+
+    
 
     configure_files (${BARRIER_BUNDLE_SOURCE_DIR} ${BARRIER_BUNDLE_DIR})
 
