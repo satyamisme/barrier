@@ -421,6 +421,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set (BARRIER_BUNDLE_APP_DIR ${BARRIER_BUNDLE_DIR}/Barrier.app)
     set (BARRIER_BUNDLE_BINARY_DIR ${BARRIER_BUNDLE_APP_DIR}/Contents/MacOS)
     set (CMAKE_OSX_ARCHITECTURES "arm64")
+    set(CMAKE_PREFIX_PATH "/Users/wupl/Qt/6.3.2/macos/") 
 
     
 

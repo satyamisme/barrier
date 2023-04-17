@@ -17,6 +17,7 @@
  */
 
 #include <iostream>
+#include <QRegExp>
 
 #include "MainWindow.h"
 
@@ -45,7 +46,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QDesktopServices>
-#include <QDesktopWidget>
+#include <QScreen>
 
 #if defined(Q_OS_MAC)
 #include <ApplicationServices/ApplicationServices.h>
@@ -352,7 +353,7 @@ void MainWindow::logOutput()
     if (m_pBarrier)
     {
         QString text(m_pBarrier->readAllStandardOutput());
-        for (QString line : text.split(QRegExp("\r|\n|\r\n"))) {
+        for (QString line : text.split(QRegularExpression("\r|\n|\r\n"))) {
             if (!line.isEmpty())
             {
                 appendLogRaw(line);
@@ -389,7 +390,7 @@ void MainWindow::appendLogError(const QString& text)
 
 void MainWindow::appendLogRaw(const QString& text)
 {
-    for (QString line : text.split(QRegExp("\r|\n|\r\n"))) {
+    for (QString line : text.split(QRegularExpression("\r|\n|\r\n"))) {
         if (!line.isEmpty()) {
             m_pLogWindow->appendRaw(line);
             updateFromLogLine(line);
@@ -428,61 +429,61 @@ void MainWindow::checkConnected(const QString& line)
 
 void MainWindow::checkFingerprint(const QString& line)
 {
-    QRegExp fingerprintRegex(".*peer fingerprint \\(SHA1\\): ([A-F0-9:]+) \\(SHA256\\): ([A-F0-9:]+)");
-    if (!fingerprintRegex.exactMatch(line)) {
+    // QRegularExpression fingerprintRegex(".*peer fingerprint \\(SHA1\\): ([A-F0-9:]+) \\(SHA256\\): ([A-F0-9:]+)");
+    // if (!fingerprintRegex.exactMatch(line)) {
         return;
-    }
+    // }
 
-    barrier::FingerprintData fingerprint_sha1 = {
-        barrier::fingerprint_type_to_string(barrier::FingerprintType::SHA1),
-        barrier::string::from_hex(fingerprintRegex.cap(1).toStdString())
-    };
+    // barrier::FingerprintData fingerprint_sha1 = {
+    //     barrier::fingerprint_type_to_string(barrier::FingerprintType::SHA1),
+    //     barrier::string::from_hex(fingerprintRegex.cap(1).toStdString())
+    // };
 
-    barrier::FingerprintData fingerprint_sha256 = {
-        barrier::fingerprint_type_to_string(barrier::FingerprintType::SHA256),
-        barrier::string::from_hex(fingerprintRegex.cap(2).toStdString())
-    };
+    // barrier::FingerprintData fingerprint_sha256 = {
+    //     barrier::fingerprint_type_to_string(barrier::FingerprintType::SHA256),
+    //     barrier::string::from_hex(fingerprintRegex.cap(2).toStdString())
+    // };
 
-    bool is_client = barrier_type() == BarrierType::Client;
+    // bool is_client = barrier_type() == BarrierType::Client;
 
-    auto db_path = is_client
-            ? barrier::DataDirectories::trusted_servers_ssl_fingerprints_path()
-            : barrier::DataDirectories::trusted_clients_ssl_fingerprints_path();
+    // auto db_path = is_client
+    //         ? barrier::DataDirectories::trusted_servers_ssl_fingerprints_path()
+    //         : barrier::DataDirectories::trusted_clients_ssl_fingerprints_path();
 
-    auto db_dir = db_path.parent_path();
-    if (!barrier::fs::exists(db_dir)) {
-        barrier::fs::create_directories(db_dir);
-    }
+    // auto db_dir = db_path.parent_path();
+    // if (!barrier::fs::exists(db_dir)) {
+    //     barrier::fs::create_directories(db_dir);
+    // }
 
     // We compare only SHA256 fingerprints, but show both SHA1 and SHA256 so that the users can
     // still verify fingerprints on old Barrier servers. This way the only time when we are exposed
     // to SHA1 vulnerabilities is when the user is reconnecting again.
-    barrier::FingerprintDatabase db;
-    db.read(db_path);
-    if (db.is_trusted(fingerprint_sha256)) {
-        return;
-    }
+    // barrier::FingerprintDatabase db;
+    // db.read(db_path);
+    // if (db.is_trusted(fingerprint_sha256)) {
+    //     return;
+    // }
 
-    static bool messageBoxAlreadyShown = false;
+    // static bool messageBoxAlreadyShown = false;
 
-    if (!messageBoxAlreadyShown) {
-        if (is_client) {
-            stopBarrier();
-        }
+    // if (!messageBoxAlreadyShown) {
+    //     if (is_client) {
+    //         stopBarrier();
+    //     }
 
-        messageBoxAlreadyShown = true;
-        FingerprintAcceptDialog dialog{this, barrier_type(), fingerprint_sha1, fingerprint_sha256};
-        if (dialog.exec() == QDialog::Accepted) {
-            // restart core process after trusting fingerprint.
-            db.add_trusted(fingerprint_sha256);
-            db.write(db_path);
-            if (is_client) {
-                startBarrier();
-            }
-        }
+    //     messageBoxAlreadyShown = true;
+    //     FingerprintAcceptDialog dialog{this, barrier_type(), fingerprint_sha1, fingerprint_sha256};
+    //     if (dialog.exec() == QDialog::Accepted) {
+    //         // restart core process after trusting fingerprint.
+    //         db.add_trusted(fingerprint_sha256);
+    //         db.write(db_path);
+    //         if (is_client) {
+    //             startBarrier();
+    //         }
+    //     }
 
-        messageBoxAlreadyShown = false;
-    }
+    //     messageBoxAlreadyShown = false;
+    // }
 }
 
 void MainWindow::restartBarrier()
