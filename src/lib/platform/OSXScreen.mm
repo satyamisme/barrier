@@ -847,6 +847,8 @@ OSXScreen::enter()
 			IORegistryEntrySetCFProperty(entry, CFSTR("IORequestIdle"), kCFBooleanFalse);
 			IOObjectRelease(entry);
 		}
+		IOPMAssertionID assertionID; 
+		IOPMAssertionDeclareUserActivity(CFSTR(""), kIOPMUserActiveLocal, &assertionID);
 
 		avoidSupression();
 	}
